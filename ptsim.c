@@ -154,7 +154,7 @@ void store_value(int proc_num,int virt_addr,int value){
   int physical_addr = GetPhysicalAddress(proc_num, virt_addr);
   mem[physical_addr] = value;
 
-  printf("Load proc %d: %d => %d, value=%d\n",
+  printf("Store proc %d: %d => %d, value=%d\n",
     proc_num, virt_addr, physical_addr, value);
 }
 
@@ -196,6 +196,21 @@ int main(int argc, char *argv[])
             int proc_num = atoi(argv[++i]);
             print_page_table(proc_num);
 
+        }
+        else if (strcmp(argv[i], "kp") == 0) {
+            int proc_num = atoi(argv[++i]);
+            kill_process(proc_num);
+        }
+        else if (strcmp(argv[i], "sb") == 0) {
+           int proc_num = atoi(argv[++i]);
+           int virt_addr = atoi(argv[++i]);
+           int value = atoi(argv[++i]);
+           store_value(proc_num, virt_addr, value);
+       }
+       else if(strcmp(argv[i], "lb") == 0) { 
+            int proc_num = atoi(argv[++i]);
+            int virt_addr = atoi(argv[++i]);
+            load_value(proc_num, virt_addr);
         }
     }
 }
