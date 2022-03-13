@@ -137,9 +137,9 @@ void kill_process(int pg){
   }
   deallocate_page(pg_table);
 }
-void GetPhysicalAddress(int proc_num,int virtual_addr){
+int GetPhysicalAddress(int proc_num,int virtual_addr){
 
-  int virtual_page = virtual_addr >> 8
+  int virtual_page = virtual_addr >> 8;
   int offset = virtual_addr & 255;
   int page_table = get_page_table(proc_num);
   int page_table_addr = get_address(get_page_table(proc_num), 0);
@@ -151,11 +151,22 @@ void GetPhysicalAddress(int proc_num,int virtual_addr){
 }
 
 void store_value(int proc_num,int virt_addr,int value){
-  int physical_addr = GetPhysicalAddress(proc_num, virtual_addr);
+  int physical_addr = GetPhysicalAddress(proc_num, virt_addr);
   mem[physical_addr] = value;
 
   printf("Load proc %d: %d => %d, value=%d\n",
-    proc_num, vaddr, addr, val);
+    proc_num, virt_addr, physical_addr, value);
+}
+
+void load_value(int proc_num,int virt_addr){
+  int physical_addr = GetPhysicalAddress(proc_num, virt_addr);
+  int value = mem[physical_addr];
+
+  printf("Load proc %d: %d => %d, value=%d\n",
+    proc_num, virt_addr, physical_addr, value);
+
+  print_page_free_map();
+
 }
 
 // Main -- process command line
@@ -184,6 +195,7 @@ int main(int argc, char *argv[])
         else if (strcmp(argv[i], "ppt") == 0) {
             int proc_num = atoi(argv[++i]);
             print_page_table(proc_num);
+
         }
     }
 }
